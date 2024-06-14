@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-import java.util.Arrays;
 
 @Data
 @Entity
