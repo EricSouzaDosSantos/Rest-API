@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-
 @Data
 @Entity
 public class Pet {
@@ -46,9 +45,8 @@ public class Pet {
     @Column(name = "socialization")
     private String[] socialization;
 
-
-    @Column(name = "photopet")
     @Lob
-    private Byte[] photopet;
+    @Column(name = "photopet")
+    private byte[] photopet;
 
 }
