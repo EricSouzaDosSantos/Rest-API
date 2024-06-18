@@ -1,7 +1,6 @@
 package br.pet.animais.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
@@ -45,8 +44,7 @@ public class Pet {
     @Column(name = "socialization")
     private String[] socialization;
 
-    @Lob
-    @Column(name = "photopet")
-    private byte[] photopet;
-
+    
+    @Column(name = "photopet_url")
+    private String photopetUrl;
 }

@@ -1,17 +1,19 @@
 package br.pet.animais.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import br.pet.animais.repository.PetRepository;
-import br.pet.animais.model.entity.Pet;
 import org.springframework.web.multipart.MultipartFile;
+import br.pet.animais.model.entity.*;
 
-import java.io.IOException;
+import br.pet.animais.Service.FileStorageService;
+import br.pet.animais.repository.PetRepository;
+
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pet")
@@ -20,35 +22,14 @@ public class PetController {
     @Autowired
     private PetRepository repository;
 
-    /*
-    @GetMapping
-     public List<Pet> GetPet(){
-         return repository.findAll();
-     }
-     /
-
-
-     */
-
-     /*
-    @GetMapping("")
-    public Optional<Pet> GetPetForId(@RequestBody Pet pet) {
-        if(pet.getId() != 0)
-
-            return repository.findById(pet.getId());
-
-         return null;
-    }
-
-      */
-
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping
-    public List<Pet> GetPet() {
+    public List<Pet> getPet() {
         List<Pet> pets = repository.findAll();
         for (Pet pet : pets) {
             System.out.println("Pet ID: " + pet.getId());
-            System.out.println("Photopet Length: " + (pet.getPhotopet() != null ? pet.getPhotopet().length : "null"));
         }
         return pets;
     }
@@ -59,52 +40,47 @@ public class PetController {
                                     @RequestParam("size") String size,
                                     @RequestParam("gender") String gender,
                                     @RequestParam("situation") String situation,
+                                    @RequestParam("veterinaryCare") String[] veterinaryCare,
                                     @RequestParam("photopet") MultipartFile photopet) {
 
         try {
             Pet pet = new Pet();
             pet.setName(name);
-            System.out.println(photopet.getBytes() +"\n \n"+ name);
             pet.setAge(age);
             pet.setSize(size);
             pet.setGender(gender);
             pet.setSituation(situation);
+            pet.setVeterinaryCare(veterinaryCare);
 
             if (photopet != null && !photopet.isEmpty()) {
-
-               // byte[] imagem = photopet.getInputStream().readAllBytes();
-                pet.setPhotopet(photopet.getBytes());
-
+                String fileName = fileStorageService.storeFile(photopet);
+                String photoUrl = "/pet/photos/" + fileName;
+                pet.setPhotopetUrl(photoUrl);
             }
 
             repository.save(pet);
 
             return ResponseEntity.ok().build();
-
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("There was an error with the uploaded image.");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    // ... (your existing updatePet and delete methods)
+    @GetMapping("/photos/{fileName:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getPhoto(@PathVariable String fileName) {
+        try {
+            Path filePath = fileStorageService.loadFile(fileName);
+            Resource resource = new UrlResource(filePath.toUri());
 
-
-    @PutMapping
-    public Pet updatePet(@RequestBody Pet pet) {
-        if (pet.getId() > 0)
-            return repository.save(pet);
-        return null;
-    }
-
-    @DeleteMapping
-    public String delete(@RequestBody Pet pet){
-        if (pet.getId() > 0){
-            repository.delete(pet);
-            return "Pet removido com sucesso";
+            if (resource.exists()) {
+                return ResponseEntity.ok().body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return "Erro ao deletar pet";
     }
-
 }
