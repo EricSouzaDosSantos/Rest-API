@@ -25,13 +25,14 @@ public class PetController {
     @Autowired
     private FileStorageService fileStorageService;
 
+
     @GetMapping
     public List<Pet> getPet() {
         List<Pet> pets = repository.findAll();
         for (Pet pet : pets) {
-            System.out.println("Pet ID: " + pet.getId());
+            System.out.println("Pet ID: " + pet.getId() + pet.getPhotopetUrl());
         }
-        return pets;
+        return repository.findAll();
     }
 
     @PostMapping
@@ -41,7 +42,7 @@ public class PetController {
                                     @RequestParam("gender") String gender,
                                     @RequestParam("situation") String situation,
                                     @RequestParam("veterinaryCare") String[] veterinaryCare,
-                                    @RequestParam("photopet") MultipartFile photopet) {
+                                    @RequestParam("photopet_url") MultipartFile photopetUrl) {
 
         try {
             Pet pet = new Pet();
@@ -52,8 +53,8 @@ public class PetController {
             pet.setSituation(situation);
             pet.setVeterinaryCare(veterinaryCare);
 
-            if (photopet != null && !photopet.isEmpty()) {
-                String fileName = fileStorageService.storeFile(photopet);
+            if (photopetUrl != null && !photopetUrl.isEmpty()) {
+                String fileName = fileStorageService.storeFile(photopetUrl);
                 String photoUrl = "/pet/photos/" + fileName;
                 pet.setPhotopetUrl(photoUrl);
             }
