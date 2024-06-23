@@ -1,5 +1,7 @@
 package br.pet.animais.controller;
 
+import br.pet.animais.model.entity.Pet;
+import br.pet.animais.model.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -7,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import br.pet.animais.model.entity.*;
 
 import br.pet.animais.Service.FileStorageService;
 import br.pet.animais.repository.PetRepository;
@@ -29,24 +30,32 @@ public class PetController {
     @GetMapping
     public List<Pet> getPet() {
         List<Pet> pets = repository.findAll();
-        for (Pet pet : pets) {
-            System.out.println("Pet ID: " + pet.getId() + pet.getPhotopetUrl());
-        }
+        /*for (Pet pet : pets) {
+            System.out.println("Pet ID: " + pet.getId() +"\n" + pet.getPhotopetUrl());
+        }*/
         return repository.findAll();
     }
 
     @PostMapping
     public ResponseEntity<?> addPet(@RequestParam("name") String name,
-                                    @RequestParam("age") String age,
-                                    @RequestParam("size") String size,
-                                    @RequestParam("gender") String gender,
-                                    @RequestParam("situation") String situation,
+                                    @RequestParam("age") String ageStr,
+                                    @RequestParam("species") String specieStr,
+                                    @RequestParam("size") String sizeStr,
+                                    @RequestParam("gender") String genderStr,
+                                    @RequestParam("situation") String situationStr,
                                     @RequestParam("veterinaryCare") String[] veterinaryCare,
                                     @RequestParam("photopet_url") MultipartFile photopetUrl) {
 
         try {
+            Age age = Age.valueOf(ageStr.toUpperCase());
+            PetSpecies specie = PetSpecies.valueOf(specieStr.toUpperCase());
+            Size size = Size.valueOf(sizeStr.toUpperCase());
+            Gender gender = Gender.valueOf(genderStr.toUpperCase());
+            Situation situation = Situation.valueOf(situationStr.toUpperCase());
+
             Pet pet = new Pet();
             pet.setName(name);
+            pet.setSpecies(specie);
             pet.setAge(age);
             pet.setSize(size);
             pet.setGender(gender);
@@ -62,6 +71,8 @@ public class PetController {
             repository.save(pet);
 
             return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid enum value provided");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
