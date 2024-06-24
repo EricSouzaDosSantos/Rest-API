@@ -4,7 +4,6 @@ import br.pet.animais.model.enums.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
 
 @Data
 @Entity
@@ -44,19 +43,15 @@ public class Pet {
     @Column(name = "color")
     private String color;
 
-    @ElementCollection
     @Column(name = "temperament")
     private String[] temperament;
 
-    @ElementCollection
     @Column(name = "veterinarycare")
     private String[] veterinaryCare;
 
-    @ElementCollection
     @Column(name = "adaptability")
     private String[] adaptability;
 
-    @ElementCollection
     @Column(name = "socialization")
     private String[] socialization;
 

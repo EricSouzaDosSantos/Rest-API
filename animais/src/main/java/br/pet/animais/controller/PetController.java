@@ -43,7 +43,7 @@ public class PetController {
                                     @RequestParam("size") String sizeStr,
                                     @RequestParam("gender") String genderStr,
                                     @RequestParam("situation") String situationStr,
-                                    @RequestParam("veterinaryCare") String[] veterinaryCare,
+                                    @RequestParam("veterinarycare") String[] veterinaryCare,
                                     @RequestParam("photopet_url") MultipartFile photopetUrl) {
 
         try {
