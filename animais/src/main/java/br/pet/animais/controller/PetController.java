@@ -26,25 +26,33 @@ public class PetController {
     @Autowired
     private FileStorageService fileStorageService;
 
-
     @GetMapping
-    public List<Pet> getPet() {
+    public List<Pet> getAllPet() {
         List<Pet> pets = repository.findAll();
-        /*for (Pet pet : pets) {
-            System.out.println("Pet ID: " + pet.getId() +"\n" + pet.getPhotopetUrl());
-        }*/
+        /*
+         * for (Pet pet : pets) {
+         * System.out.println("Pet ID: " + pet.getId() +"\n" + pet.getPhotopetUrl());
+         * }
+         */
         return repository.findAll();
+    }
+
+    @GetMapping(path = { "/{id}" })
+    public ResponseEntity getById(@PathVariable long id) {
+        return repository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<?> addPet(@RequestParam("name") String name,
-                                    @RequestParam("age") String ageStr,
-                                    @RequestParam("species") String specieStr,
-                                    @RequestParam("size") String sizeStr,
-                                    @RequestParam("gender") String genderStr,
-                                    @RequestParam("situation") String situationStr,
-                                    @RequestParam("veterinarycare") String[] veterinaryCare,
-                                    @RequestParam("photopet_url") MultipartFile photopetUrl) {
+            @RequestParam("age") String ageStr,
+            @RequestParam("species") String specieStr,
+            @RequestParam("size") String sizeStr,
+            @RequestParam("gender") String genderStr,
+            @RequestParam("situation") String situationStr,
+            @RequestParam("veterinarycare") String[] veterinaryCare,
+            @RequestParam("photopet_url") MultipartFile photopetUrl) {
 
         try {
             Age age = Age.valueOf(ageStr.toUpperCase());
