@@ -1,4 +1,4 @@
-package br.pet.animais.controller;
+package br.pet.animais.pets.controller;
 
 
 import org.springframework.context.annotation.Configuration;

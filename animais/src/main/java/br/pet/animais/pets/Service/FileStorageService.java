@@ -1,4 +1,4 @@
-package br.pet.animais.Service;
+package br.pet.animais.pets.Service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

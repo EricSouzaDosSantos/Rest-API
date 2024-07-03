@@ -1,4 +1,4 @@
-package br.pet.animais.model.enums;
+package br.pet.animais.pets.model.enums;
 
 public enum Age {
     FILHOTE,

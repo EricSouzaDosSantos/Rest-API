@@ -1,7 +1,7 @@
-package br.pet.animais.controller;
+package br.pet.animais.pets.controller;
 
-import br.pet.animais.model.entity.Pet;
-import br.pet.animais.model.enums.*;
+import br.pet.animais.pets.model.entity.Pet;
+import br.pet.animais.pets.model.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.pet.animais.Service.FileStorageService;
-import br.pet.animais.repository.PetRepository;
+import br.pet.animais.pets.Service.FileStorageService;
+import br.pet.animais.pets.repository.PetRepository;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -52,6 +52,16 @@ public class PetController {
             @RequestParam("gender") String genderStr,
             @RequestParam("situation") String situationStr,
             @RequestParam("veterinarycare") String[] veterinaryCare,
+            @RequestParam("petstory") String petStory,
+            @RequestParam("color") String color,
+            @RequestParam("temperament") String[] temperament,
+            @RequestParam("adaptability") String[] adaptability,
+            @RequestParam("socialization") String[] socialization,
+            @RequestParam("lastTutorName") String lastTutorName,
+            @RequestParam("lastTutorEmail") String lastTutorEmail,
+            @RequestParam("lastTutorPhoneFix") String lastTutorPhoneFix,
+            @RequestParam("lastTutorPhoneCel") String lastTutorPhoneCel,
+            @RequestParam("lastTutorPreferences") String LastTutorPreferences,
             @RequestParam("photopet_url") MultipartFile photopetUrl) {
 
         try {
@@ -62,6 +72,11 @@ public class PetController {
             Situation situation = Situation.valueOf(situationStr.toUpperCase());
 
             Pet pet = new Pet();
+            pet.setLastTutorName(lastTutorName);
+            pet.setLastTutorEmail(lastTutorEmail);
+            pet.setLastTutorPhoneFix(lastTutorPhoneFix);
+            pet.setLastTutorPhoneCel(lastTutorPhoneCel);
+            pet.setLastTutorPreferencesContact(LastTutorPreferences);
             pet.setName(name);
             pet.setSpecies(specie);
             pet.setAge(age);
@@ -69,10 +84,15 @@ public class PetController {
             pet.setGender(gender);
             pet.setSituation(situation);
             pet.setVeterinaryCare(veterinaryCare);
+            pet.setPetStory(petStory);
+            pet.setColor(color);
+            pet.setSocialization(socialization);
+            pet.setAdaptability(adaptability);
+            pet.setTemperament(temperament);
 
             if (photopetUrl != null && !photopetUrl.isEmpty()) {
                 String fileName = fileStorageService.storeFile(photopetUrl);
-                String photoUrl = "/pet/photos/" + fileName;
+                String photoUrl = "/photos/" + fileName;
                 pet.setPhotopetUrl(photoUrl);
             }
 

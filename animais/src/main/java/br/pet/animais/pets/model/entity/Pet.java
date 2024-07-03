@@ -1,6 +1,7 @@
-package br.pet.animais.model.entity;
+package br.pet.animais.pets.model.entity;
 
-import br.pet.animais.model.enums.*;
+import br.pet.animais.pets.model.enums.*;
+import br.pet.animais.pets.model.enums.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,21 @@ public class Pet {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "lastTutorName")
+    private String LastTutorName;
+
+    @Column(name = "LastTutorEmail")
+    private String LastTutorEmail;
+
+    @Column(name = "lastTutorPhoneFix")
+    private String lastTutorPhoneFix;
+
+    @Column(name = "lastTutorPhoneCel")
+    private String lastTutorPhoneCel;
+
+    @Column(name = "lastTutorPreferences")
+    private String lastTutorPreferencesContact;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "species")
